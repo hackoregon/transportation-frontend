@@ -9,9 +9,8 @@ script:
 - npm run build
 deploy:
   provider: s3
-  access_key_id: AKIAIEMAU7JMW5XYN5EQ
-  secret_access_key:
-    secure: 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
+  access_key_id: "${AWS_ACCESS_KEY}"
+  secret_access_key: "${AWS_SECRET_KEY}"
   region: us-west-2
   bucket: hacko-transportation-staging
   skip_cleanup: true
