@@ -3,7 +3,6 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import Header from 'react-component-library/src/Navigation/Header';
 import TransportationMap from '../Map';
 
 const Container = styled.div`
@@ -18,9 +17,10 @@ const Container = styled.div`
 function App(props) {
   return (
     <Container>
-      <Header title="Civic" />
       {React.Children.toArray(props.children)}
-      <TransportationMap />
+      <div>
+        <TransportationMap />
+      </div>
     </Container>
   );
 }
