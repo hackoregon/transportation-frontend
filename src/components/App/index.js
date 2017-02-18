@@ -3,6 +3,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
+import Header from 'react-component-library/src/Navigation/Header';
 
 const Container = styled.div`
   min-height: 100%;
@@ -16,7 +17,7 @@ const Container = styled.div`
 function App(props) {
   return (
     <Container>
-      <nav>Some nav</nav>
+      <Header title="Civic" />
       {React.Children.toArray(props.children)}
     </Container>
   );
