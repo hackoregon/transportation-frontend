@@ -4,6 +4,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Header from 'react-component-library/src/Navigation/Header';
+import TransportationMap from '../Map';
 
 const Container = styled.div`
   min-height: 100%;
@@ -19,6 +20,7 @@ function App(props) {
     <Container>
       <Header title="Civic" />
       {React.Children.toArray(props.children)}
+      <TransportationMap />
     </Container>
   );
 }
