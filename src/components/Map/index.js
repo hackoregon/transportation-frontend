@@ -10,16 +10,10 @@ const road = 'ROADMAP';
 const position = [45.504094, -122.6046037];
 const zoom = 11;
 
-// static test data from lines in leaflet friendly format
-// @todo: formatter
-// const lineFeatures = {
-//   type: 'FeatureCollection'
-// }
-
 const style = {
-  color: 'red',
-  weight: 5,
-  opacity: 0
+  color: '#666',
+  weight: 4,
+  opacity: 0.7
 }
 
 class TransportationMap extends React.Component {
@@ -33,7 +27,7 @@ class TransportationMap extends React.Component {
     };
   }
 
-  componentDidMount() {
+  componentWillMount() {
     let self = this;
     request("http://localhost:8000/api/lines/", {})
     .then(function(parsedData) {
@@ -43,31 +37,51 @@ class TransportationMap extends React.Component {
     });
   }
 
+  // todo: something that sucks less
   render() {
-    return (
-      <Map center={position} zoom={zoom} style={{ height: '500px' }}>
-        <LayersControl position="topright">
-          <BaseLayer name="OpenStreetMap.Mapnik">
-            <TileLayer url="http://{s}.tile.osm.org/{z}/{x}/{y}.png" />
-          </BaseLayer>
-          <BaseLayer checked name="Google Maps Roads">
-            <GoogleLayer googlekey={key} maptype={road} />
-          </BaseLayer>
-          <BaseLayer name="Google Maps Terrain">
-            <GoogleLayer googlekey={key} maptype={terrain} />
-          </BaseLayer>
-        </LayersControl>
-        <GeoJSON data={this.state.features} style={style} onEachFeature={onEachFeature}/>
-      </Map>
-    );
+    if (this.state.features.features.length) {
+      return (
+        <Map center={position} zoom={zoom} style={{ height: '500px' }}>
+          <LayersControl position="topright">
+            <BaseLayer name="OpenStreetMap.Mapnik">
+              <TileLayer url="http://{s}.tile.osm.org/{z}/{x}/{y}.png" />
+            </BaseLayer>
+            <BaseLayer checked name="Google Maps Roads">
+              <GoogleLayer googlekey={key} maptype={road} />
+            </BaseLayer>
+            <BaseLayer name="Google Maps Terrain">
+              <GoogleLayer googlekey={key} maptype={terrain} />
+            </BaseLayer>
+          </LayersControl>
+          <GeoJSON data={this.state.features} style={style} />
+        </Map>
+      );
+    } else {
+      return (
+        <Map center={position} zoom={zoom} style={{ height: '500px' }}>
+          <LayersControl position="topright">
+            <BaseLayer name="OpenStreetMap.Mapnik">
+              <TileLayer url="http://{s}.tile.osm.org/{z}/{x}/{y}.png" />
+            </BaseLayer>
+            <BaseLayer checked name="Google Maps Roads">
+              <GoogleLayer googlekey={key} maptype={road} />
+            </BaseLayer>
+            <BaseLayer name="Google Maps Terrain">
+              <GoogleLayer googlekey={key} maptype={terrain} />
+            </BaseLayer>
+          </LayersControl>
+        </Map>
+      );
+    }
   }
 }
 
-function onEachFeature(feature, layer) {
-    if (feature.properties) {
-      var fp = feature.properties;
-      layer.bindPopup(fp.sourceRef + " " + fp.dateRange + " " + fp.data.Contact.Name);
-    }
-}
+// function onEachFeature(feature, layer) {
+//     // if (feature.properties) {
+//     //   var fp = feature.properties;
+//     //   layer.bindPopup(fp.sourceRef + " " + fp.dateRange + " " + fp.data.Contact.Name);
+//     // }
+//     // console.log('onEachFeature', feature, layer);
+// }
 
 export default TransportationMap;
