@@ -12,14 +12,9 @@ const zoom = 11;
 
 // static test data from lines in leaflet friendly format
 // @todo: formatter
-const lineFeatures = {
-  type: 'FeatureCollection'
-}
-
-request("http://localhost:8000/api/lines/", {})
-.then(function(parsedData) {
-  lineFeatures.features = parsedData.features;
-});
+// const lineFeatures = {
+//   type: 'FeatureCollection'
+// }
 
 const style = {
   color: 'red',
@@ -27,23 +22,45 @@ const style = {
   opacity: 0
 }
 
-function TransportationMap() {
-  return (
-    <Map center={position} zoom={zoom} style={{ height: '500px' }}>
-      <LayersControl position="topright">
-        <BaseLayer name="OpenStreetMap.Mapnik">
-          <TileLayer url="http://{s}.tile.osm.org/{z}/{x}/{y}.png" />
-        </BaseLayer>
-        <BaseLayer checked name="Google Maps Roads">
-          <GoogleLayer googlekey={key} maptype={road} />
-        </BaseLayer>
-        <BaseLayer name="Google Maps Terrain">
-          <GoogleLayer googlekey={key} maptype={terrain} />
-        </BaseLayer>
-      </LayersControl>
-      <GeoJSON data={lineFeatures} style={style} onEachFeature={onEachFeature}/>
-    </Map>
-  );
+class TransportationMap extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      features: {
+        type: 'FeatureCollection',
+        features: []
+      }
+    };
+  }
+
+  componentDidMount() {
+    let self = this;
+    request("http://localhost:8000/api/lines/", {})
+    .then(function(parsedData) {
+      self.setState({
+        features: parsedData
+      });
+    });
+  }
+
+  render() {
+    return (
+      <Map center={position} zoom={zoom} style={{ height: '500px' }}>
+        <LayersControl position="topright">
+          <BaseLayer name="OpenStreetMap.Mapnik">
+            <TileLayer url="http://{s}.tile.osm.org/{z}/{x}/{y}.png" />
+          </BaseLayer>
+          <BaseLayer checked name="Google Maps Roads">
+            <GoogleLayer googlekey={key} maptype={road} />
+          </BaseLayer>
+          <BaseLayer name="Google Maps Terrain">
+            <GoogleLayer googlekey={key} maptype={terrain} />
+          </BaseLayer>
+        </LayersControl>
+        <GeoJSON data={this.state.features} style={style} onEachFeature={onEachFeature}/>
+      </Map>
+    );
+  }
 }
 
 function onEachFeature(feature, layer) {
